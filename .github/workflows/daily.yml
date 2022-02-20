@@ -23,8 +23,12 @@ jobs:
         name: Checkout [main]
         with:
           fetch-depth: 0
-#      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-#        uses: nrwl/nx-set-shas@v2
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: 6.11.0
+          run_install: true
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
@@ -36,17 +40,17 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-
-      - uses: pnpm/action-setup@v2.1.0
-        with:
-          version: 6.11.0
-          run_install: true
+#      - uses: pnpm/action-setup@v2.1.0
+#        with:
+#          version: 6.11.0
+#          run_install: true
       - run: git config --global user.email krupnik.yuri@gmail.com && git config --global user.name yurikrupnik
       - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
       - run: npx nx-cloud start-ci-run
-      - run: npx nx run-many --target=test --parallel --max-parallel=4 --all --skip-nx-cache
-      - run: npx nx run-many --target=lint --parallel --max-parallel=4 --all --skip-nx-cache
-      - run: npx nx run-many --target=e2e --parallel --max-parallel=4 --all --headless --skip-nx-cache
-      - run: npx nx run-many --target=build --parallel --max-parallel=4 --all --prod --skip-nx-cache
+      - run: pnpx nx run-many --target=test --parallel --max-parallel=4 --all --skip-nx-cache
+      - run: pnpx nx run-many --target=lint --parallel --max-parallel=4 --all --skip-nx-cache
+      - run: pnpx nx run-many --target=e2e --parallel --max-parallel=4 --all --headless --skip-nx-cache
+      - run: pnpx nx run-many --target=build --parallel --max-parallel=4 --all --prod --skip-nx-cache
       - name: Stop agents
         run: npx nx-cloud stop-all-agents
         if: ${{ always() }}
