@@ -24,7 +24,7 @@ jobs:
         uses: nrwl/nx-set-shas@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '14'
+          node-version: '16'
           cache: 'pnpm'
       - run: npm install
       - run: npx nx-cloud start-ci-run
@@ -46,7 +46,7 @@ jobs:
         uses: nrwl/nx-set-shas@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '14'
+          node-version: '16'
           cache: 'pnpm'
       - run: pnpm install
       - run: pnpx nx-cloud start-ci-run
@@ -69,7 +69,7 @@ jobs:
           version: 6.11.0
       - uses: actions/setup-node@v1
         with:
-          node-version: '14'
+          node-version: '16'
           cache: 'pnpm'
       - run: pnpm i
       - name: Start Nx Agent ${{ matrix.agent }}
