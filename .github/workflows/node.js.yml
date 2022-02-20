@@ -1,131 +1,74 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-#SetNodeAndPnpm: &set-node
-
-name: Node.js CI
-
+name: CI
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+
+env:
+  NX_CLOUD_DISTRIBUTED_EXECUTION: true
 
 jobs:
-  setup:
-
+  main:
     runs-on: ubuntu-latest
-
+    if: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout [main]
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: 6.11.0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+          cache: 'pnpm'
+      - run: npm install
+      - run: npx nx-cloud start-ci-run
+      - run: npx nx affected --target=build --parallel --max-parallel=3
+      - run: npx nx affected --target=test --parallel --max-parallel=2
+      - run: npx nx-cloud stop-all-agents
+  pr:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: 6.11.0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpx nx-cloud start-ci-run
+      - run: pnpx nx affected --target=build --parallel --max-parallel=3
+      - run: pnpx nx affected --target=test --parallel --max-parallel=2
+      - run: pnpx nx-cloud stop-all-agents
+  agents:
+    runs-on: ubuntu-latest
+    name: Agent 1
+    timeout-minutes: 60
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x, 17.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
-    steps:
-    - uses: actions/checkout@v2
-      name: Checkout [main]
-      with:
-        fetch-depth: 0
-    - uses: pnpm/action-setup@v2.1.0
-      with:
-        version: 6.11.0
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'
-    - run: git config --global user.email krupnik.yuri@gmail.com && git config --global user.name yurikrupnik
-    - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
-    - run: ls
-#    - run: npx nx-cloud start-ci-run
-#    - run: npx nx run-many --target=test --parallel --max-parallel=4 --all --skip-nx-cache
-#    - name: Cache pnpm modules
-#      uses: actions/cache@v2
-#      with:
-#        path: ~/.pnpm-store
-#        key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-#        restore-keys: |
-#          ${{ runner.os }}-
-
-#    - uses: pnpm/action-setup@v2.1.0
-#      with:
-#        version: 6.11.0
-#        run_install: true
-#    - name: Archive code coverage results
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: node_modules
-#        path: node_modules
-#    - run: pnpm i
-  build:
-    runs-on: ubuntu-latest
-    needs: [ 'setup' ]
+        agent: [ 1, 2, 3 ]
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-          #         cache: 'pnpm'
-#      -----------<<<<<<<<<
-#      - name: Download math result for job 1
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: node_modules
-#      -----------<<<<<<<<<
-      - name: Cache pnpm modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-
       - uses: pnpm/action-setup@v2.1.0
         with:
           version: 6.11.0
-          run_install: true
-      - run: pnpm build
-  test:
-    runs-on: ubuntu-latest
-    needs: ['setup']
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@v1
         with:
-          node-version: 16
-          #         cache: 'pnpm'
-      - name: Cache pnpm modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-
-      - uses: pnpm/action-setup@v2.1.0
-        with:
-          version: 6.11.0
-          run_install: true
-      - run: pnpm test
-  lint:
-    runs-on: ubuntu-latest
-    needs: [ 'setup' ]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-          #         cache: 'pnpm'
-      - name: Cache pnpm modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-
-      - uses: pnpm/action-setup@v2.1.0
-        with:
-          version: 6.11.0
-          run_install: true
-      - run: pnpm lint
+          node-version: '14'
+          cache: 'pnpm'
+      - run: pnpm i
+      - name: Start Nx Agent ${{ matrix.agent }}
+        run: npx nx-cloud start-agent
