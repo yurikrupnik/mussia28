@@ -5,6 +5,7 @@ function App() {
   return (
     <div class={styles.App}>
       <header class={styles.header}>
+        <h1>Welcome fe-solid-app</h1>
         <img src={logo} class={styles.logo} alt="logo" />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
