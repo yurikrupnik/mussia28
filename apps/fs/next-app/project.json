@@ -1,0 +1,56 @@
+{
+  "root": "apps/fs/next-app",
+  "sourceRoot": "apps/fs/next-app",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/fs/next-app",
+        "outputPath": "dist/apps/fs/next-app"
+      },
+      "configurations": {
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/next:server",
+      "options": {
+        "buildTarget": "fs-next-app:build",
+        "dev": true,
+        "open": true,
+        "port": 8000
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "fs-next-app:build:production",
+          "dev": false
+        }
+      }
+    },
+    "export": {
+      "executor": "@nrwl/next:export",
+      "options": {
+        "buildTarget": "fs-next-app:build:production"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/fs/next-app"],
+      "options": {
+        "jestConfig": "apps/fs/next-app/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/fs/next-app/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": []
+}
