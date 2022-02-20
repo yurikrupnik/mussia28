@@ -57,10 +57,10 @@ jobs:
 #      - name: Login to DockerHub Registry
 #        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 #      - run: npx nx-cloud start-ci-run
-      - run: pnpx nx affected --target=lint --parallel --max-parallel=4
-      - run: pnpx nx affected --target=build --parallel --max-parallel=4 --prod
-      - run: pnpx nx affected --target=test --parallel --max-parallel=4
-      - run: pnpx nx affected --target=e2e --parallel --max-parallel=4 --headless
+      - run: pnpx nx affected --target=lint --parallel --max-parallel=4 --verbose
+      - run: pnpx nx affected --target=build --parallel --max-parallel=4 --prod --verbose
+      - run: pnpx nx affected --target=test --parallel --max-parallel=4 --verbose
+      - run: pnpx nx affected --target=e2e --parallel --max-parallel=4 --headless --verbose
 #      - run: pnpm dlx nx affected --target=lint --parallel --max-parallel=4
 #      - run: pnpm dlx nx affected --target=e2e --parallel --max-parallel=4 --headless
 #      - run: pnpm dlx nx affected --target=build --parallel --max-parallel=4 --prod
