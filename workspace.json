@@ -3,6 +3,10 @@
   "projects": {
     "fe-react-app": "apps/fe/react-app",
     "fe-react-app-api": "apps/fe/react-app-api",
-    "fe-react-app-e2e": "apps/fe/react-app-e2e"
+    "fe-react-app-e2e": "apps/fe/react-app-e2e",
+    "fe-solid-app": "apps/fe/solid-app",
+    "fe-solid-app-e2e": "apps/fe-solid-app-e2e",
+    "fs-next-app": "apps/fs/next-app",
+    "fs-next-app-e2e": "apps/fs/next-app-e2e"
   }
 }
