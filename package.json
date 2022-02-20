@@ -4,10 +4,10 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
-    "build": "pnpx nx run-many --target=build --parallel --max-parallel=4 --prod --all --verbose",
-    "lint": "pnpx nx run-many --target=lint --parallel --max-parallel=4 --all --verbose",
-    "test": "pnpx nx run-many --target=test --parallel --max-parallel=4 --all --verbose",
-    "e2e": "pnpx nx run-many --target=e2e --parallel --max-parallel=4 --all --headless --verbose"
+    "build": "pnpx nx run-many --target=build --parallel --max-parallel=4 --prod --all",
+    "lint": "pnpx nx run-many --target=lint --parallel --max-parallel=4 --all",
+    "test": "pnpx nx run-many --target=test --parallel --max-parallel=4 --all",
+    "e2e": "pnpx nx run-many --target=e2e --parallel --max-parallel=4 --all --headless"
   },
   "private": true,
   "devDependencies": {
