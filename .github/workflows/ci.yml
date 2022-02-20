@@ -1,0 +1,151 @@
+
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  NX_CLOUD_DISTRIBUTED_EXECUTION: true
+  PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+#    if: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout [main]
+        with:
+          fetch-depth: 0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+
+      - uses: c-hive/gha-npm-cache@v1
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: 6.21.1
+          run_install: true
+#      - run: pnpm i
+
+#      - run: git config --global user.email krupnik.yuri@gmail.com && git config --global user.name yurikrupnik
+#      - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
+#
+#      - run: gcloud config list
+#      - name: Set up Cloud SDK
+#        uses: google-github-actions/setup-gcloud@master
+#        with:
+#          project_id: mussia14
+#          service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+#      - run: |-
+#          gcloud --quiet auth configure-docker europe-west1-docker.pkg.dev
+#      - run: docker-compose -f docker-compose.nx.yml build
+#      - run: docker push eu.gcr.io/mussia8/nx
+#      - name: Login to DockerHub Registry
+#        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+#      - run: npx nx-cloud start-ci-run
+      - run: pnpx nx affected --target=lint --parallel --max-parallel=4
+      - run: pnpx nx affected --target=build --parallel --max-parallel=4 --prod
+      - run: pnpx nx affected --target=test --parallel --max-parallel=4
+      - run: pnpx nx affected --target=e2e --parallel --max-parallel=4 --headless
+#      - run: pnpm dlx nx affected --target=lint --parallel --max-parallel=4
+#      - run: pnpm dlx nx affected --target=e2e --parallel --max-parallel=4 --headless
+#      - run: pnpm dlx nx affected --target=build --parallel --max-parallel=4 --prod
+#      - run: NX_CLOUD_DISTRIBUTED_EXECUTION=false npx nx affected --target=docker --parallel --max-parallel=4 --base=origin/main
+      - uses: nelonoel/branch-name@v1.0.1
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
+#      - name: Stop agents
+#        run: npx nx-cloud stop-all-agents
+#        if: ${{ always() }}
+
+#  pr:
+#    runs-on: ubuntu-latest
+#    if: ${{ github.event_name == 'pull_request' }}
+#    steps:
+#      - uses: actions/checkout@v2
+#        with:
+#          fetch-depth: 0
+#      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+#        uses: nrwl/nx-set-shas@v2
+#      - uses: actions/setup-node@v2
+#        with:
+#          node-version: '16'
+#
+#      - run: git config --global user.email krupnik.yuri@gmail.com && git config --global user.name yurikrupnik
+#      - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
+#
+#      - uses: c-hive/gha-npm-cache@v1
+#      - run: pnpm i
+#      - name: Set up Cloud SDK
+#        uses: google-github-actions/setup-gcloud@master
+#        with:
+#          project_id: mussia14
+#          service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+#      - run: |-
+#          gcloud --quiet auth configure-docker europe-west1-docker.pkg.dev
+##      - run: docker-compose -f docker-compose.nx.yml build
+##      - run: docker push eu.gcr.io/mussia8/nx
+##      - name: Login to DockerHub Registry
+##        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+#      - run: gcloud config list
+#      - run: npx nx-cloud start-ci-run
+#      - run: pnpm nx affected --target=build --parallel --max-parallel=4 --base=origin/main --prod
+#      - run: pnpm nx affected --target=test --parallel --max-parallel=4 --base=origin/main
+#      - run: pnpm nx affected --target=lint --parallel --max-parallel=4 --base=origin/main
+#      - run: pnpm nx affected --target=e2e --parallel --max-parallel=4 --base=origin/main --headless
+#      - run: NX_CLOUD_DISTRIBUTED_EXECUTION=false pnpm nx affected --target=docker --parallel --max-parallel=4 --base=origin/main
+#      - uses: nelonoel/branch-name@v1.0.1
+#      - name: Dump GitHub context
+#        env:
+#          GITHUB_CONTEXT: ${{ toJSON(github) }}
+#        run: echo "$GITHUB_CONTEXT"
+#      - run: echo "$BRANCH_NAME"
+#
+##      - run: NX_CLOUD_DISTRIBUTED_EXECUTION=false npx nx affected --target=deploy --parallel --max-parallel=3 --base=origin/master --prod
+##        env:
+##          HEAD_REF: "${{ github.head_ref }}"
+#      - name: Stop agents
+#        run: npx nx-cloud stop-all-agents
+#        if: ${{ always() }}
+
+#  builds:
+#    runs-on: ubuntu-latest
+
+#  agents:
+#    runs-on: ubuntu-latest
+#    name: Agent 1
+#    timeout-minutes: 20
+#    strategy:
+#      matrix:
+#        agent: [1, 2, 3]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions/setup-node@v2
+#        with:
+#          node-version: '16'
+#      - run: npm install
+#      - name: Set up Cloud SDK
+#        uses: google-github-actions/setup-gcloud@master
+#        with:
+#          project_id: mussia14
+#          service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+#      - run: |-
+#          gcloud --quiet auth configure-docker
+#      - name: Start Nx Agent ${{ matrix.agent }}
+#        run: npx nx-cloud start-agent

@@ -1,0 +1,73 @@
+{
+  "root": "apps/fe/react-app",
+  "sourceRoot": "apps/fe/react-app/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "swc",
+        "outputPath": "dist/apps/fe/react-app",
+        "index": "apps/fe/react-app/src/index.html",
+        "baseHref": "/",
+        "main": "apps/fe/react-app/src/main.tsx",
+        "polyfills": "apps/fe/react-app/src/polyfills.ts",
+        "tsConfig": "apps/fe/react-app/tsconfig.app.json",
+        "assets": [
+          "apps/fe/react-app/src/favicon.ico",
+          "apps/fe/react-app/src/assets"
+        ],
+        "styles": ["apps/fe/react-app/src/styles.css"],
+        "scripts": [],
+        "webpackConfig": "@nrwl/react/plugins/webpack"
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/fe/react-app/src/environments/environment.ts",
+              "with": "apps/fe/react-app/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/web:dev-server",
+      "options": {
+        "buildTarget": "fe-react-app:build",
+        "hmr": true
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "fe-react-app:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/fe/react-app/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/fe/react-app"],
+      "options": {
+        "jestConfig": "apps/fe/react-app/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

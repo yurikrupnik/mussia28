@@ -1,4 +1,7 @@
 {
   "version": 2,
-  "projects": {}
+  "projects": {
+    "fe-react-app": "apps/fe/react-app",
+    "fe-react-app-e2e": "apps/fe/react-app-e2e"
+  }
 }
