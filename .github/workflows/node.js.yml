@@ -71,12 +71,6 @@ jobs:
         with:
           node-version: 16
           cache: 'pnpm'
-#      -----------<<<<<<<<<
-#      - name: Download math result for job 1
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: node_modules
-#      -----------<<<<<<<<<
 #      - name: Cache pnpm modules
 #        uses: actions/cache@v2
 #        with:
