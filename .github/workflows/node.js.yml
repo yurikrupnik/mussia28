@@ -36,8 +36,9 @@ jobs:
         cache: 'pnpm'
     - run: git config --global user.email krupnik.yuri@gmail.com && git config --global user.name yurikrupnik
     - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
+    - run: ls
 #    - run: npx nx-cloud start-ci-run
-    - run: npx nx run-many --target=test --parallel --max-parallel=4 --all --skip-nx-cache
+#    - run: npx nx run-many --target=test --parallel --max-parallel=4 --all --skip-nx-cache
 #    - name: Cache pnpm modules
 #      uses: actions/cache@v2
 #      with:
