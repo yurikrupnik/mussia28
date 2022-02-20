@@ -84,7 +84,7 @@ jobs:
         with:
           version: 6.11.0
           run_install: true
-      - run: pnpm build
+      - run: pnpx nx affected --target=build --parallel --max-parallel=3 --prod
   test:
     runs-on: ubuntu-latest
     needs: ['setup']
