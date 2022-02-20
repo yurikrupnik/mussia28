@@ -38,7 +38,7 @@ jobs:
             ${{ runner.os }}-
       - uses: pnpm/action-setup@v2.1.0
         with:
-          version: 6.21.1
+          version: 6.11.0
           run_install: true
       - run: git config --global user.email krupnik.yuri@gmail.com && git config --global user.name yurikrupnik
       - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc

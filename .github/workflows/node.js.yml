@@ -60,7 +60,7 @@ jobs:
             ${{ runner.os }}-
       - uses: pnpm/action-setup@v2.1.0
         with:
-          version: 6.21.1
+          version: 6.11.0
           run_install: true
       - run: pnpm build
   test:
@@ -82,7 +82,7 @@ jobs:
             ${{ runner.os }}-
       - uses: pnpm/action-setup@v2.1.0
         with:
-          version: 6.21.1
+          version: 6.11.0
           run_install: true
       - run: pnpm test
   lint:
@@ -104,6 +104,6 @@ jobs:
             ${{ runner.os }}-
       - uses: pnpm/action-setup@v2.1.0
         with:
-          version: 6.21.1
+          version: 6.11.0
           run_install: true
       - run: pnpm lint
