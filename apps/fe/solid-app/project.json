@@ -19,7 +19,8 @@
       "executor": "@nxext/vite:dev",
       "options": {
         "outputPath": "dist/apps/fe/solid-app",
-        "frameworkConfigFile": "@nxext/solid/plugins/vite"
+        "frameworkConfigFile": "@nxext/solid/plugins/vite",
+        "proxyConfig": "apps/fe/solid-app/proxy.conf.json"
       }
     },
     "lint": {
