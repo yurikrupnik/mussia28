@@ -18,7 +18,7 @@ function addEsBuildAndRemoveBabel(config) {
 
 function getWebpackConfig(config) {
   config = reactWebpackConfig(config);
-  // console.log( 'config', config);
+  // console.log( 'config', config.module.rules);
   // config.output.publicPath = 'http://localhost:3001';
   // config.module.rules.splice(1, 1, {
   //   test: /\.tsx?$/,
@@ -32,21 +32,41 @@ function getWebpackConfig(config) {
   // addEsBuildAndRemoveBabel(config);
 
   config.plugins.push(
-    // new ModuleFederationPlugin({
-    //   runtime: 'my-run-time',
-    //   name: 'home',
-    //   library: { type: 'var', name: 'home' },
-    //   filename: 'remoteEntry.js',
-    //   remotes: {
-    //     nav: 'nav@http://localhost:3003/remoteEntry.js',
-    //     aris: 'nav@http://localhost:3001/remoteEntry.js',
-    //     // nav: 'nav@http://localhost:3002/remoteEntry.js',
-    //   },
-    //   exposes: {
-    //     // './Header': './src/app/header.tsx',
-    //   },
-    //   shared: ['react', 'react-dom', 'react-router-dom'],
-    // })
+    new ModuleFederationPlugin({
+      // runtime: 'my-run-time',
+      name: 'react_app',
+      library: { type: 'var', name: 'react_app' },
+      filename: 'remoteEntry.js',
+      remotes: {
+        nav: 'nav@http://localhost:3003/remoteEntry.js',
+        // Header SecondHeader
+        home: 'home@http://localhost:3001/remoteEntry.js',
+        // 'react-app': 'react-app@http://localhost:4200/remoteEntry.js',
+        // Stam fruit ProductCard
+        // aris: 'nav@http://localhost:3001/remoteEntry.js',
+        // nav: 'nav@http://localhost:3002/remoteEntry.js',
+      },
+      exposes: {
+        './Button': './src/app/button.tsx',
+      },
+      shared: {
+        react: {
+          eager: true,
+        },
+        'react-dom': {
+          eager: true,
+        },
+        'react-router-dom': {
+          eager: true,
+        },
+        'react-query': {
+          eager: true,
+        }
+      }
+      // shared: [{ 'react': {
+      //
+      //   } }, 'react-dom', 'react-router-dom'],
+    })
     // new BundleAnalyzerPlugin({
     //   analyzerMode: 'static',
     //   reportFilename: 'bundles-report/index.html',
@@ -54,7 +74,7 @@ function getWebpackConfig(config) {
   );
   // config.optimization = {
   //   ...config.optimization,
-  //   runtimeChunk: false,
+  //   // runtimeChunk: false,
   //   minimizer: [
   //     // new ESBuildMinifyPlugin({
   //     //   target: 'es2015',

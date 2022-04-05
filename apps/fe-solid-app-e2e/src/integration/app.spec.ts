@@ -8,6 +8,6 @@ describe('fe-solid-app', () => {
     cy.login('my-email@something.com', 'myPassword');
 
     // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains('Welcome fe-solid-app');
+    cy.get('div').contains('bears');
   });
 });
