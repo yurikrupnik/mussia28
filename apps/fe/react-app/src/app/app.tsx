@@ -1,14 +1,15 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './app.module.css';
 import NxWelcome from './nx-welcome';
+import Button from './button';
 
 import { Route, Link } from 'react-router-dom';
 
 export function App() {
   return (
     <>
-      <NxWelcome title="fe-react-app" />
-      <div />
+      <NxWelcome title={"Welcome fe-react-app"}/>
+      <Button />
 
       {/* START: routes */}
       {/* These routes and navigation have been generated for you */}

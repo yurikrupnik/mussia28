@@ -8,6 +8,6 @@ describe('fe-react-app', () => {
     cy.login('my-email@something.com', 'myPassword');
 
     // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains('Welcome fe-react-app');
+    cy.get('div').contains('Welcome');
   });
 });
